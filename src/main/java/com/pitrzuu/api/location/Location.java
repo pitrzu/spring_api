@@ -46,7 +46,7 @@ public class Location{
     private User user;
 
     @OneToMany(mappedBy = "location")
-    private Set<Order> orders;
+    private Set<Order> orders = new java.util.LinkedHashSet<>();
 
     public Long getId(){
         return id;

@@ -1,4 +1,4 @@
-package com.pitrzuu.api.order.promocode;
+package com.pitrzuu.api.promocode;
 
 import com.pitrzuu.api.item.Item;
 import com.pitrzuu.api.order.Order;

@@ -2,7 +2,7 @@ package com.pitrzuu.api.order;
 
 import com.pitrzuu.api.location.Location;
 import com.pitrzuu.api.order.detail.OrderDetail;
-import com.pitrzuu.api.order.promocode.PromoCode;
+import com.pitrzuu.api.promocode.PromoCode;
 import com.pitrzuu.api.order.status.EOrderStatus;
 import com.pitrzuu.api.order.status.OrderStatus;
 import jakarta.persistence.*;
@@ -88,10 +88,6 @@ public class Order{
         this.customerComment = customerComment;
         return this;
     }
-    public Order setTotalPrice( Double totalPrice ){
-        this.totalPrice = totalPrice;
-        return this;
-    }
     public Order setCreationTime( Timestamp creationTime ){
         this.creationTime = creationTime;
         return this;
@@ -118,6 +114,9 @@ public class Order{
     }
     public Order setOrderDetails( Set<OrderDetail> orderDetails ){
         this.orderDetails = orderDetails;
+        this.totalPrice = this.orderDetails.stream().map(OrderDetail::getPrice).reduce(Double::sum).get();
         return this;
     }
+
+
 }

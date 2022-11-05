@@ -2,7 +2,7 @@ package com.pitrzuu.api.item;
 
 import com.pitrzuu.api.item.category.Category;
 import com.pitrzuu.api.item.pricing.PricedItem;
-import com.pitrzuu.api.order.promocode.PromoCode;
+import com.pitrzuu.api.promocode.PromoCode;
 import jakarta.persistence.*;
 
 import java.util.Objects;
