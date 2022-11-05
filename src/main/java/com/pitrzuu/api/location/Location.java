@@ -1,130 +1,137 @@
 package com.pitrzuu.api.location;
 
-import com.pitrzuu.api.order.delivery.Delivery;
+import com.pitrzuu.api.order.Order;
+import com.pitrzuu.api.user.User;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "locations")
-public class Location {
-    public Location() {}
-    public Location(Delivery delivery, String email, String phone, String country, Voivodeship voivodeship, String city, String postCode, String street, String streetNumber) {
-        this.delivery = delivery;
-        this.email = email;
-        this.phone = phone;
-        this.country = country;
-        this.voivodeship = voivodeship;
-        this.city = city;
-        this.postCode = postCode;
-        this.street = street;
-        this.streetNumber = streetNumber;
-    }
+public class Location{
+    public Location(){}
 
     @Id
-    @OneToOne(optional = false, orphanRemoval = true)
-    @JoinColumn(name = "delivery_id", nullable = false)
-    private Delivery delivery;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "location_id", nullable = false)
+    private Long id;
 
-    @Column(name = "location_email", nullable = false, unique = true)
+    @Column(name = "location_first-name", nullable = false)
+    private String firstName;
+
+    @Column(name = "location_last-name", nullable = false)
+    private String lastName;
+
+    @Column(name = "location_email", nullable = false, length = 64)
     private String email;
 
-    @Column(name = "location_phone-number", nullable = false, unique = true, length = 9)
+    @Column(name = "location_phone", nullable = false, length = 9)
     private String phone;
-
-    @Column(name = "location_conutry", nullable = false, length = 2)
-    private String country;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "voivodeship_id", nullable = false)
-    private Voivodeship voivodeship;
-
-    @Column(name = "location_city", nullable = false, length = 32)
-    private String city;
 
     @Column(name = "location_post-code", nullable = false, length = 5)
     private String postCode;
 
-    @Column(name = "location_street", nullable = false, length = 32)
+    @Column(name = "location_city", nullable = false)
+    private String city;
+
+    @Column(name = "location_street", nullable = false)
     private String street;
 
-    @Column(name = "location_street-number", nullable = false, length = 12)
+    @Column(name = "location_street-number", nullable = false)
     private String streetNumber;
 
-    public Delivery getDelivery() {
-        return delivery;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "location")
+    private Set<Order> orders;
+
+    public Long getId(){
+        return id;
     }
-    public String getEmail() {
+    public String getEmail(){
         return email;
     }
-    public String getPhone() {
+    public String getPhone(){
         return phone;
     }
-    public String getCountry() {
-        return country;
+    public String getFirstName(){
+        return firstName;
     }
-    public Voivodeship getVoivodeship() {
-        return voivodeship;
+    public String getLastName(){
+        return lastName;
     }
-    public String getCity() {
-        return city;
-    }
-    public String getPostCode() {
+    public String getPostCode(){
         return postCode;
     }
-    public String getStreet() {
+    public String getCity(){
+        return city;
+    }
+    public String getStreet(){
         return street;
     }
-    public String getStreetNumber() {
+    public String getStreetNumber(){
         return streetNumber;
     }
-
-    public Location setDelivery(Delivery delivery) {
-        this.delivery = delivery;
-        return this;
+    public User getUser(){
+        return user;
     }
-    public Location setEmail(String email) {
+    public Set<Order> getOrders(){
+        return orders;
+    }
+
+    public Location setEmail( String email ){
         this.email = email;
         return this;
     }
-    public Location setPhone(String phone) {
+    public Location setPhone( String phone ){
         this.phone = phone;
         return this;
     }
-    public Location setCountry(String country) {
-        this.country = country;
+    public Location setFirstName( String firstName ){
+        this.firstName = firstName;
         return this;
     }
-    public Location setVoivodeship(Voivodeship voivodeship) {
-        this.voivodeship = voivodeship;
+    public Location setLastName( String lastName ){
+        this.lastName = lastName;
         return this;
     }
-    public Location setCity(String city) {
-        this.city = city;
-        return this;
-    }
-    public Location setPostCode(String postCode) {
+    public Location setPostCode( String postCode ){
         this.postCode = postCode;
         return this;
     }
-    public Location setStreet(String street) {
+    public Location setCity( String city ){
+        this.city = city;
+        return this;
+    }
+    public Location setStreet( String street ){
         this.street = street;
         return this;
     }
-    public Location setStreetNumber(String streetNumber) {
+    public Location setStreetNumber( String streetNumber ){
         this.streetNumber = streetNumber;
+        return this;
+    }
+    public Location setUser( User user ){
+        this.user = user;
+        return this;
+    }
+    public Location setOrders( Set<Order> orders ){
+        this.orders = orders;
         return this;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Location location)) return false;
-        return getDelivery().equals(location.getDelivery()) && getEmail().equals(location.getEmail()) && getPhone().equals(location.getPhone()) && getCountry().equals(location.getCountry()) && getVoivodeship().equals(location.getVoivodeship()) && getCity().equals(location.getCity()) && getPostCode().equals(location.getPostCode()) && getStreet().equals(location.getStreet()) && getStreetNumber().equals(location.getStreetNumber());
+    public boolean equals( Object o ){
+        if(this == o) return true;
+        if(!( o instanceof Location location )) return false;
+        return getId().equals(location.getId()) && getFirstName().equals(location.getFirstName()) && getLastName().equals(location.getLastName()) && getEmail().equals(location.getEmail()) && getPhone().equals(location.getPhone()) && getPostCode().equals(location.getPostCode()) && getCity().equals(location.getCity()) && getStreet().equals(location.getStreet()) && getStreetNumber().equals(location.getStreetNumber()) && Objects.equals(getUser(), location.getUser());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getDelivery(), getEmail(), getPhone(), getCountry(), getVoivodeship(), getCity(), getPostCode(), getStreet(), getStreetNumber());
+    public int hashCode(){
+        return Objects.hash(getId(), getFirstName(), getLastName(), getEmail(), getPhone(), getPostCode(), getCity(), getStreet(), getStreetNumber(), getUser());
     }
 }

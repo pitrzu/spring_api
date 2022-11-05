@@ -1,136 +1,123 @@
 package com.pitrzuu.api.order;
 
-import com.pitrzuu.api.detail.Detail;
-import com.pitrzuu.api.order.delivery.Delivery;
-import com.pitrzuu.api.user.User;
+import com.pitrzuu.api.location.Location;
+import com.pitrzuu.api.order.detail.OrderDetail;
+import com.pitrzuu.api.order.promocode.PromoCode;
+import com.pitrzuu.api.order.status.EOrderStatus;
+import com.pitrzuu.api.order.status.OrderStatus;
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.security.Timestamp;
-import java.util.Objects;
+import java.sql.Timestamp;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
-public class Order {
-    public Order() {}
-    public Order(Timestamp creationTime, Timestamp awaitedTime, User user, Delivery delivery, Set<Detail> details) {
-        this.creationTime = creationTime;
-        this.awaitedTime = awaitedTime;
-        this.user = user;
-        this.delivery = delivery;
-        this.details = details;
-    }
-    public Order(Timestamp creationTime, Timestamp promisedTime, Timestamp awaitedTime, User user, Delivery delivery, Set<Detail> details) {
-        this.creationTime = creationTime;
-        this.promisedTime = promisedTime;
-        this.awaitedTime = awaitedTime;
-        this.user = user;
-        this.delivery = delivery;
-        this.details = details;
-    }
-    public Order(String comment, Timestamp creationTime, Timestamp awaitedTime, User user, Delivery delivery, Set<Detail> details) {
-        this.comment = comment;
-        this.creationTime = creationTime;
-        this.awaitedTime = awaitedTime;
-        this.user = user;
-        this.delivery = delivery;
-        this.details = details;
-    }
-    public Order(String comment, Timestamp creationTime, Timestamp promisedTime, Timestamp awaitedTime, User user, Delivery delivery, Set<Detail> details) {
-        this.comment = comment;
-        this.creationTime = creationTime;
-        this.promisedTime = promisedTime;
-        this.awaitedTime = awaitedTime;
-        this.user = user;
-        this.delivery = delivery;
-        this.details = details;
+public class Order{
+    public Order(){
+        this.orderStatuses.add(new OrderStatus(this, EOrderStatus.ORDERED));
     }
 
     @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)
-    private UUID id;
+    private Long id;
 
     @Column(name = "order_comment", length = 128)
-    private String comment;
+    private String customerComment;
 
-    @Column(nullable = false)
+    @Transient
+    private Double totalPrice;
+
+    @Column(name = "order_creation-time", nullable = false)
+    @CreationTimestamp
     private Timestamp creationTime;
 
-    private Timestamp promisedTime;
-
-    @Column(nullable = false)
+    @Column(name = "order_awaited-time")
     private Timestamp awaitedTime;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
-    @JoinColumn(name = "user_ID", nullable = false)
-    private User user;
+    @Column(name = "order_promised-time")
+    private Timestamp promisedTime;
 
-    @OneToOne(cascade = CascadeType.REMOVE, optional = false, orphanRemoval = true)
-    @JoinColumn(name = "delivery_id", nullable = false)
-    private Delivery delivery;
+    @ManyToOne
+    @JoinColumn(name = "promo_id")
+    private PromoCode promoCode;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Detail> details = new java.util.LinkedHashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
 
-    public UUID getId() {
+    @OneToMany(mappedBy = "order", orphanRemoval = true, cascade = { CascadeType.ALL })
+    private Set<OrderStatus> orderStatuses = new java.util.LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "order")
+    private Set<OrderDetail> orderDetails = new java.util.LinkedHashSet<>();;
+
+    public Long getId(){
         return id;
     }
-    public String getComment() {
-        return comment;
+    public String getCustomerComment(){
+        return customerComment;
     }
-    public Timestamp getCreationTime() {
+    public Double getTotalPrice(){
+        return totalPrice;
+    }
+    public Timestamp getCreationTime(){
         return creationTime;
     }
-    public Timestamp getPromisedTime() {
-        return promisedTime;
-    }
-    public Timestamp getAwaitedTime() {
+    public Timestamp getAwaitedTime(){
         return awaitedTime;
     }
-    public User getUser() {
-        return user;
+    public Timestamp getPromisedTime(){
+        return promisedTime;
     }
-    public Delivery getDelivery() {
-        return delivery;
+    public PromoCode getPromoCode(){
+        return promoCode;
     }
-    public Set<Detail> getDetails() {
-        return details;
+    public Location getLocation(){
+        return location;
+    }
+    public Set<OrderStatus> getOrderStatuses(){
+        return orderStatuses;
+    }
+    public Set<OrderDetail> getOrderDetails(){
+        return orderDetails;
     }
 
-    public Order setComment(String comment) {
-        this.comment = comment;
+    public Order setCustomerComment( String customerComment ){
+        this.customerComment = customerComment;
         return this;
     }
-    public Order setPromisedTime(Timestamp promisedTime) {
-        this.promisedTime = promisedTime;
+    public Order setTotalPrice( Double totalPrice ){
+        this.totalPrice = totalPrice;
         return this;
     }
-    public Order setAwaitedTime(Timestamp awaitedTime) {
+    public Order setCreationTime( Timestamp creationTime ){
+        this.creationTime = creationTime;
+        return this;
+    }
+    public Order setAwaitedTime( Timestamp awaitedTime ){
         this.awaitedTime = awaitedTime;
         return this;
     }
-    public Order setDetails(Set<Detail> details) {
-        this.details = details;
+    public Order setPromisedTime( Timestamp promisedTime ){
+        this.promisedTime = promisedTime;
         return this;
     }
-    public Order setDelivery(Delivery delivery) {
-        this.delivery = delivery;
+    public Order setPromoCode( PromoCode promoCode ){
+        this.promoCode = promoCode;
         return this;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Order order)) return false;
-        return getId().equals(order.getId()) && Objects.equals(getComment(), order.getComment()) && getCreationTime().equals(order.getCreationTime()) && Objects.equals(getPromisedTime(), order.getPromisedTime()) && getAwaitedTime().equals(order.getAwaitedTime()) && getUser().equals(order.getUser()) && getDelivery().equals(order.getDelivery()) && getDetails().equals(order.getDetails());
+    public Order setLocation( Location location ){
+        this.location = location;
+        return this;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getComment(), getCreationTime(), getPromisedTime(), getAwaitedTime(), getUser(), getDelivery(), getDetails());
+    public Order setOrderStatuses( Set<OrderStatus> orderStatuses ){
+        this.orderStatuses = orderStatuses;
+        return this;
+    }
+    public Order setOrderDetails( Set<OrderDetail> orderDetails ){
+        this.orderDetails = orderDetails;
+        return this;
     }
 }

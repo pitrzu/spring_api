@@ -1,102 +1,80 @@
 package com.pitrzuu.api.item.addon;
 
-import com.pitrzuu.api.detail.Detail;
+import com.pitrzuu.api.item.category.Category;
+import com.pitrzuu.api.order.detail.OrderDetail;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.util.Objects;
+import java.util.Set;
 
-@Table(name = "addons")
 @Entity
-public class Addon {
-    public Addon() {
-    }
-    public Addon(String name, String description, Double price) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-    }
-    public Addon(String name, String description, String imagePath, Double price) {
-        this.name = name;
-        this.description = description;
-        this.imagePath = imagePath;
-        this.price = price;
-    }
+@Table(name = "addons")
+public class Addon{
+    public Addon(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "addon_id", nullable = false)
-    private Long id;
+    private Integer id;
 
-    @Column(name = "addon_name", nullable = false, unique = true, length = 64)
+    @Column(name = "addon_name", nullable = false)
     private String name;
-
-    @Column(name = "addon_description", nullable = false, length = 128)
-    private String description;
-
-    @Column(name = "addon_image-path", length = 64)
-    private String imagePath;
 
     @Column(name = "addon_price", nullable = false)
     @NumberFormat(pattern = "000000.00", style = NumberFormat.Style.CURRENCY)
+    @JdbcTypeCode(SqlTypes.DECIMAL)
     private Double price;
 
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "order_id", referencedColumnName = "order_id"),
-            @JoinColumn(name = "item_id", referencedColumnName = "item_id")
-    })
-    private Detail detail;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    public Long getId() {
+    @ManyToMany(mappedBy = "addons")
+    private Set<OrderDetail> orderedIn = new java.util.LinkedHashSet<>();
+
+    public Integer getId(){
         return id;
     }
-    public String getName() {
+    public String getName(){
         return name;
     }
-    public String getDescription() {
-        return description;
-    }
-    public String getImagePath() {
-        return imagePath;
-    }
-    public Double getPrice() {
+    public Double getPrice(){
         return price;
     }
-    public Detail getDetail() {
-        return detail;
+    public Category getCategory(){
+        return category;
     }
+    public Set<OrderDetail> getOrderedIn(){return orderedIn;}
 
-    public Addon setName(String name) {
+
+    public Addon setName( String name ){
         this.name = name;
         return this;
     }
-    public Addon setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-    public Addon setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-        return this;
-    }
-    public Addon setPrice(Double price) {
+    public Addon setPrice( Double price ){
         this.price = price;
         return this;
     }
-    public Addon setDetail(Detail details) {
-        this.detail = details;
+    public Addon setCategory( Category category ){
+        this.category = category;
+        return this;
+    }
+    public Addon setOrderedIn( Set<OrderDetail> orderedIn ){
+        this.orderedIn = orderedIn;
         return this;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Addon addon)) return false;
-        return getId().equals(addon.getId()) && getName().equals(addon.getName()) && Objects.equals(getDescription(), addon.getDescription()) && Objects.equals(getImagePath(), addon.getImagePath()) && getPrice().equals(addon.getPrice()) && getDetail().equals(addon.getDetail());
+    public boolean equals( Object o ){
+        if(this == o) return true;
+        if(!( o instanceof Addon addon )) return false;
+        return getId().equals(addon.getId()) && getName().equals(addon.getName()) && getPrice().equals(addon.getPrice()) && getCategory().equals(addon.getCategory());
     }
-
     @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getImagePath(), getPrice(), getDetail());
+    public int hashCode(){
+        return Objects.hash(getId(), getName(), getPrice(), getCategory());
     }
 }
