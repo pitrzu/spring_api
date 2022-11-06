@@ -110,9 +110,13 @@ public class OrderDetail{
         if(!( o instanceof OrderDetail that )) return false;
         return getOrder().equals(that.getOrder()) && getItem().equals(that.getItem()) && getPrice().equals(that.getPrice()) && getQuantity().equals(that.getQuantity()) && getComment().equals(that.getComment()) && getPromoCode().equals(that.getPromoCode()) && Objects.equals(getAddons(), that.getAddons());
     }
-
     @Override
     public int hashCode(){
         return Objects.hash(getOrder(), getItem(), getPrice(), getQuantity(), getComment(), getPromoCode(), getAddons());
+    }
+
+    @Override
+    public String toString(){
+        return "OrderDetail{" + "order=" + order + ", item=" + item + ", price=" + price + ", quantity=" + quantity + ", comment='" + comment + '\'' + ", promoCode=" + promoCode + ", addons=" + addons + '}';
     }
 }

@@ -82,9 +82,13 @@ public class Item{
         if(!( o instanceof Item item )) return false;
         return getId().equals(item.getId()) && getName().equals(item.getName()) && Objects.equals(getDescription(), item.getDescription()) && getImgPath().equals(item.getImgPath()) && getCategory().equals(item.getCategory()) && Objects.equals(getPrices(), item.getPrices());
     }
-
     @Override
     public int hashCode(){
         return Objects.hash(getId(), getName(), getDescription(), getImgPath(), getCategory(), getPrices());
+    }
+
+    @Override
+    public String toString(){
+        return "Item{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' + ", imgPath='" + imgPath + '\'' + ", category=" + category + ", pricedItems=" + pricedItems + ", promoCodes=" + promoCodes + '}';
     }
 }

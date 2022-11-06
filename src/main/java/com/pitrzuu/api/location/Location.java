@@ -1,7 +1,7 @@
 package com.pitrzuu.api.location;
 
 import com.pitrzuu.api.order.Order;
-import com.pitrzuu.api.user.User;
+import com.pitrzuu.api.person.Person;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -17,18 +17,6 @@ public class Location{
     @Column(name = "location_id", nullable = false)
     private Long id;
 
-    @Column(name = "location_first-name", nullable = false)
-    private String firstName;
-
-    @Column(name = "location_last-name", nullable = false)
-    private String lastName;
-
-    @Column(name = "location_email", nullable = false, length = 64)
-    private String email;
-
-    @Column(name = "location_phone", nullable = false, length = 9)
-    private String phone;
-
     @Column(name = "location_post-code", nullable = false, length = 5)
     private String postCode;
 
@@ -41,27 +29,14 @@ public class Location{
     @Column(name = "location_street-number", nullable = false)
     private String streetNumber;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(mappedBy = "location")
+    private Set<Person> people = new java.util.LinkedHashSet<>();
 
     @OneToMany(mappedBy = "location")
     private Set<Order> orders = new java.util.LinkedHashSet<>();
 
     public Long getId(){
         return id;
-    }
-    public String getEmail(){
-        return email;
-    }
-    public String getPhone(){
-        return phone;
-    }
-    public String getFirstName(){
-        return firstName;
-    }
-    public String getLastName(){
-        return lastName;
     }
     public String getPostCode(){
         return postCode;
@@ -75,29 +50,13 @@ public class Location{
     public String getStreetNumber(){
         return streetNumber;
     }
-    public User getUser(){
-        return user;
+    public Set<Person> getPeople(){
+        return people;
     }
     public Set<Order> getOrders(){
         return orders;
     }
 
-    public Location setEmail( String email ){
-        this.email = email;
-        return this;
-    }
-    public Location setPhone( String phone ){
-        this.phone = phone;
-        return this;
-    }
-    public Location setFirstName( String firstName ){
-        this.firstName = firstName;
-        return this;
-    }
-    public Location setLastName( String lastName ){
-        this.lastName = lastName;
-        return this;
-    }
     public Location setPostCode( String postCode ){
         this.postCode = postCode;
         return this;
@@ -114,8 +73,8 @@ public class Location{
         this.streetNumber = streetNumber;
         return this;
     }
-    public Location setUser( User user ){
-        this.user = user;
+    public Location setPeople( Set<Person> people ){
+        this.people = people;
         return this;
     }
     public Location setOrders( Set<Order> orders ){
@@ -127,11 +86,10 @@ public class Location{
     public boolean equals( Object o ){
         if(this == o) return true;
         if(!( o instanceof Location location )) return false;
-        return getId().equals(location.getId()) && getFirstName().equals(location.getFirstName()) && getLastName().equals(location.getLastName()) && getEmail().equals(location.getEmail()) && getPhone().equals(location.getPhone()) && getPostCode().equals(location.getPostCode()) && getCity().equals(location.getCity()) && getStreet().equals(location.getStreet()) && getStreetNumber().equals(location.getStreetNumber()) && Objects.equals(getUser(), location.getUser());
+        return getId().equals(location.getId()) && getPostCode().equals(location.getPostCode()) && getCity().equals(location.getCity()) && getStreet().equals(location.getStreet()) && getStreetNumber().equals(location.getStreetNumber()) && Objects.equals(getPeople(), location.getPeople());
     }
-
     @Override
     public int hashCode(){
-        return Objects.hash(getId(), getFirstName(), getLastName(), getEmail(), getPhone(), getPostCode(), getCity(), getStreet(), getStreetNumber(), getUser());
+        return Objects.hash(getId(), getPostCode(), getCity(), getStreet(), getStreetNumber(), getPeople());
     }
 }

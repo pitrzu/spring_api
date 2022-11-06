@@ -5,54 +5,9 @@ import com.pitrzuu.api.order.detail.OrderDetail;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
-
-class PriceID implements Serializable{
-    public PriceID(){}
-    public PriceID(Item item, ESize size){
-        this.item = item;
-        this.size = size;
-    }
-
-    private Item item;
-    private ESize size;
-
-    public Item getItem(){
-        return item;
-    }
-    public ESize getSize(){
-        return size;
-    }
-
-    public PriceID setItem( Item item ){
-        this.item = item;
-        return this;
-    }
-    public PriceID setSize( ESize size ){
-        this.size = size;
-        return this;
-    }
-
-    @Override
-    public boolean equals( Object o ){
-        if(this == o) return true;
-        if(!( o instanceof PriceID priceID )) return false;
-        return getItem().equals(priceID.getItem()) && getSize() == priceID.getSize();
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(getItem(), getSize());
-    }
-
-    @Override
-    public String toString(){
-        return "PriceID{" + "item=" + item + ", size=" + size + '}';
-    }
-}
 
 @Entity
 @Table(name = "prices")
@@ -120,9 +75,14 @@ public class PricedItem{
         if(!( o instanceof PricedItem pricedItem1 )) return false;
         return getItem().equals(pricedItem1.getItem()) && getSize() == pricedItem1.getSize() && getPrice().equals(pricedItem1.getPrice());
     }
-
     @Override
     public int hashCode(){
         return Objects.hash(getItem(), getSize(), getPrice());
+    }
+
+
+    @Override
+    public String toString(){
+        return "PricedItem{" + "item=" + item + ", size=" + size + ", price=" + price + ", updateTime=" + updateTime + ", orderedIn=" + orderedIn + '}';
     }
 }

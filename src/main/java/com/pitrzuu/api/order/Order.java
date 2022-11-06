@@ -2,20 +2,21 @@ package com.pitrzuu.api.order;
 
 import com.pitrzuu.api.location.Location;
 import com.pitrzuu.api.order.detail.OrderDetail;
-import com.pitrzuu.api.promocode.PromoCode;
 import com.pitrzuu.api.order.status.EOrderStatus;
 import com.pitrzuu.api.order.status.OrderStatus;
+import com.pitrzuu.api.promocode.PromoCode;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "orders")
 public class Order{
     public Order(){
-        this.orderStatuses.add(new OrderStatus(this, EOrderStatus.ORDERED));
+        this.orderStatuses.add( new OrderStatus(this, EOrderStatus.ORDERED) );
     }
 
     @Id
@@ -114,9 +115,22 @@ public class Order{
     }
     public Order setOrderDetails( Set<OrderDetail> orderDetails ){
         this.orderDetails = orderDetails;
-        this.totalPrice = this.orderDetails.stream().map(OrderDetail::getPrice).reduce(Double::sum).get();
         return this;
     }
 
+    @Override
+    public boolean equals( Object o ){
+        if(this == o) return true;
+        if(!( o instanceof Order order )) return false;
+        return getId().equals(order.getId()) && Objects.equals(getCustomerComment(), order.getCustomerComment()) && getTotalPrice().equals(order.getTotalPrice()) && getCreationTime().equals(order.getCreationTime()) && Objects.equals(getAwaitedTime(), order.getAwaitedTime()) && Objects.equals(getPromisedTime(), order.getPromisedTime()) && Objects.equals(getPromoCode(), order.getPromoCode()) && getLocation().equals(order.getLocation());
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(getId(), getCustomerComment(), getTotalPrice(), getCreationTime(), getAwaitedTime(), getPromisedTime(), getPromoCode(), getLocation());
+    }
 
+    @Override
+    public String toString(){
+        return "Order{" + "id=" + id + ", customerComment='" + customerComment + '\'' + ", totalPrice=" + totalPrice + ", creationTime=" + creationTime + ", awaitedTime=" + awaitedTime + ", promisedTime=" + promisedTime + ", promoCode=" + promoCode + ", location=" + location + ", orderStatuses=" + orderStatuses + ", orderDetails=" + orderDetails + '}';
+    }
 }
