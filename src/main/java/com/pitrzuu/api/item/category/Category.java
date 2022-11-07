@@ -2,6 +2,7 @@ package com.pitrzuu.api.item.category;
 
 import com.pitrzuu.api.item.Item;
 import com.pitrzuu.api.item.addon.Addon;
+import com.pitrzuu.api.item.category.possibleSize.PossibleSize;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -26,6 +27,9 @@ public class Category{
     @OneToMany(mappedBy = "category")
     private Set<Addon> possibleAddons;
 
+    @OneToMany(mappedBy = "category")
+    private Set<PossibleSize> possibleSizes;
+
     public Integer getId(){
         return id;
     }
@@ -38,6 +42,9 @@ public class Category{
     public Set<Addon> getPossibleAddons(){
         return possibleAddons;
     }
+    public Set<PossibleSize> getPossibleSizes(){
+        return possibleSizes;
+    }
 
     public Category setName( String name ){
         this.name = name;
@@ -49,6 +56,10 @@ public class Category{
     }
     public Category setPossibleAddons( Set<Addon> possibleAddons ){
         this.possibleAddons = possibleAddons;
+        return this;
+    }
+    public Category setPossibleSizes( Set<PossibleSize> possibleSizes ){
+        this.possibleSizes = possibleSizes;
         return this;
     }
 

@@ -1,13 +1,17 @@
 package com.pitrzuu.api.person;
 
 import com.pitrzuu.api.location.Location;
+import com.pitrzuu.api.order.Order;
 import com.pitrzuu.api.user.User;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "people")
+@Table(name = "people", uniqueConstraints = {
+        @UniqueConstraint(name = "unq_contact", columnNames = {"person_email", "person_phone"})
+})
 public class Person{
     public Person(){}
 
@@ -36,6 +40,9 @@ public class Person{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "person")
+    private Set<Order> orders = new java.util.LinkedHashSet<>();
+
     public Long getId(){
         return id;
     }
@@ -57,6 +64,7 @@ public class Person{
     public User getUser(){
         return user;
     }
+    public Set<Order> getOrders() { return orders; }
 
     public Person setFirstName( String firstName ){
         this.firstName = firstName;
@@ -82,6 +90,10 @@ public class Person{
         this.user = user;
         return this;
     }
+    public Person setOrders( Set<Order> orders ){
+        this.orders = orders;
+        return this;
+    }
 
     @Override
     public boolean equals( Object o ){
@@ -91,6 +103,12 @@ public class Person{
     }
     @Override
     public int hashCode(){
-        return Objects.hash(getId(), getFirstName(), getLastName(), getEmail(), getPhone(), getLocation(), getUser());
+        return Objects.hash(getId(),
+                getFirstName(),
+                getLastName(),
+                getEmail(),
+                getPhone(),
+                getLocation(),
+                getUser());
     }
 }

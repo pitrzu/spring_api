@@ -1,9 +1,8 @@
 package com.pitrzuu.api.order;
 
-import com.pitrzuu.api.location.Location;
 import com.pitrzuu.api.order.detail.OrderDetail;
-import com.pitrzuu.api.order.status.EOrderStatus;
 import com.pitrzuu.api.order.status.OrderStatus;
+import com.pitrzuu.api.person.Person;
 import com.pitrzuu.api.promocode.PromoCode;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,7 +15,7 @@ import java.util.Set;
 @Table(name = "orders")
 public class Order{
     public Order(){
-        this.orderStatuses.add( new OrderStatus(this, EOrderStatus.ORDERED) );
+        this.orderStatuses.add( new OrderStatus(this) );
     }
 
     @Id
@@ -45,8 +44,8 @@ public class Order{
     private PromoCode promoCode;
 
     @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
 
     @OneToMany(mappedBy = "order", orphanRemoval = true, cascade = { CascadeType.ALL })
     private Set<OrderStatus> orderStatuses = new java.util.LinkedHashSet<>();
@@ -75,8 +74,8 @@ public class Order{
     public PromoCode getPromoCode(){
         return promoCode;
     }
-    public Location getLocation(){
-        return location;
+    public Person getPerson() {
+        return person;
     }
     public Set<OrderStatus> getOrderStatuses(){
         return orderStatuses;
@@ -84,13 +83,17 @@ public class Order{
     public Set<OrderDetail> getOrderDetails(){
         return orderDetails;
     }
+    public OrderStatus getLatestStatus(){
+        return this.getOrderStatuses()
+                .stream()
+                .reduce(( orderStatusR, orderStatus ) ->
+                        orderStatusR.getOrderStatus().ordinal() > orderStatus.getOrderStatus().ordinal() ? orderStatusR : orderStatus
+                ).orElse(new OrderStatus(this));
+    }
+
 
     public Order setCustomerComment( String customerComment ){
         this.customerComment = customerComment;
-        return this;
-    }
-    public Order setCreationTime( Timestamp creationTime ){
-        this.creationTime = creationTime;
         return this;
     }
     public Order setAwaitedTime( Timestamp awaitedTime ){
@@ -105,8 +108,8 @@ public class Order{
         this.promoCode = promoCode;
         return this;
     }
-    public Order setLocation( Location location ){
-        this.location = location;
+    public Order setPerson( Person person ){
+        this.person = person;
         return this;
     }
     public Order setOrderStatuses( Set<OrderStatus> orderStatuses ){
@@ -114,6 +117,10 @@ public class Order{
         return this;
     }
     public Order setOrderDetails( Set<OrderDetail> orderDetails ){
+        this.totalPrice = orderDetails.stream()
+                .map(OrderDetail::getPrice)
+                .reduce(Double::sum)
+                .orElse(0.0d);
         this.orderDetails = orderDetails;
         return this;
     }
@@ -122,15 +129,15 @@ public class Order{
     public boolean equals( Object o ){
         if(this == o) return true;
         if(!( o instanceof Order order )) return false;
-        return getId().equals(order.getId()) && Objects.equals(getCustomerComment(), order.getCustomerComment()) && getTotalPrice().equals(order.getTotalPrice()) && getCreationTime().equals(order.getCreationTime()) && Objects.equals(getAwaitedTime(), order.getAwaitedTime()) && Objects.equals(getPromisedTime(), order.getPromisedTime()) && Objects.equals(getPromoCode(), order.getPromoCode()) && getLocation().equals(order.getLocation());
+        return getId().equals(order.getId()) && Objects.equals(getCustomerComment(), order.getCustomerComment()) && getTotalPrice().equals(order.getTotalPrice()) && getCreationTime().equals(order.getCreationTime()) && Objects.equals(getAwaitedTime(), order.getAwaitedTime()) && Objects.equals(getPromisedTime(), order.getPromisedTime()) && Objects.equals(getPromoCode(), order.getPromoCode()) && getPerson().equals(order.getPerson());
     }
     @Override
     public int hashCode(){
-        return Objects.hash(getId(), getCustomerComment(), getTotalPrice(), getCreationTime(), getAwaitedTime(), getPromisedTime(), getPromoCode(), getLocation());
+        return Objects.hash(getId(), getCustomerComment(), getTotalPrice(), getCreationTime(), getAwaitedTime(), getPromisedTime(), getPromoCode(), getPerson());
     }
 
     @Override
     public String toString(){
-        return "Order{" + "id=" + id + ", customerComment='" + customerComment + '\'' + ", totalPrice=" + totalPrice + ", creationTime=" + creationTime + ", awaitedTime=" + awaitedTime + ", promisedTime=" + promisedTime + ", promoCode=" + promoCode + ", location=" + location + ", orderStatuses=" + orderStatuses + ", orderDetails=" + orderDetails + '}';
+        return "Order{" + "id=" + id + ", customerComment='" + customerComment + '\'' + ", totalPrice=" + totalPrice + ", creationTime=" + creationTime + ", awaitedTime=" + awaitedTime + ", promisedTime=" + promisedTime + ", promoCode=" + promoCode + ", person=" + person + ", orderStatuses=" + orderStatuses + ", orderDetails=" + orderDetails + '}';
     }
 }

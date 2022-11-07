@@ -1,6 +1,5 @@
-package com.pitrzuu.api.item.dto;
+package com.pitrzuu.api.item;
 
-import com.pitrzuu.api.item.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

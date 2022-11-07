@@ -1,6 +1,5 @@
 package com.pitrzuu.api.location;
 
-import com.pitrzuu.api.order.Order;
 import com.pitrzuu.api.person.Person;
 import jakarta.persistence.*;
 
@@ -32,8 +31,6 @@ public class Location{
     @OneToMany(mappedBy = "location")
     private Set<Person> people = new java.util.LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "location")
-    private Set<Order> orders = new java.util.LinkedHashSet<>();
 
     public Long getId(){
         return id;
@@ -52,9 +49,6 @@ public class Location{
     }
     public Set<Person> getPeople(){
         return people;
-    }
-    public Set<Order> getOrders(){
-        return orders;
     }
 
     public Location setPostCode( String postCode ){
@@ -77,19 +71,20 @@ public class Location{
         this.people = people;
         return this;
     }
-    public Location setOrders( Set<Order> orders ){
-        this.orders = orders;
-        return this;
-    }
 
     @Override
     public boolean equals( Object o ){
         if(this == o) return true;
         if(!( o instanceof Location location )) return false;
-        return getId().equals(location.getId()) && getPostCode().equals(location.getPostCode()) && getCity().equals(location.getCity()) && getStreet().equals(location.getStreet()) && getStreetNumber().equals(location.getStreetNumber()) && Objects.equals(getPeople(), location.getPeople());
+        return getId().equals(location.getId()) && getPostCode().equals(location.getPostCode()) && getCity().equals(location.getCity()) && getStreet().equals(location.getStreet()) && getStreetNumber().equals(location.getStreetNumber());
     }
     @Override
     public int hashCode(){
-        return Objects.hash(getId(), getPostCode(), getCity(), getStreet(), getStreetNumber(), getPeople());
+        return Objects.hash(
+                getId(),
+                getPostCode(),
+                getCity(),
+                getStreet(),
+                getStreetNumber());
     }
 }

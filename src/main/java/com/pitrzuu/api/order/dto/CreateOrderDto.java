@@ -1,20 +1,19 @@
 package com.pitrzuu.api.order.dto;
 
-import com.pitrzuu.api.IValidateDto;
-import com.pitrzuu.api.item.dto.ItemDto;
-import com.pitrzuu.api.location.LocationDto;
+import com.pitrzuu.api.person.dto.PersonDto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Set;
 
-public class CreateOrderDto implements Serializable, IValidateDto{
-    private String  customerComment;
-    private Timestamp   awaitedTime;
-    private Timestamp  promisedTime;
-    private LocationDto locationDto;
-    private Long         locationId;
-    private Set<ItemDto>    ordered;
+public class CreateOrderDto implements Serializable{
+    private String customerComment;
+    private Timestamp awaitedTime;
+    private String promoCode;
+    private Long userId;
+    private PersonDto person;
+    private Set<CreateDetailDto> ordered;
 
     public String getCustomerComment(){
         return customerComment;
@@ -22,26 +21,32 @@ public class CreateOrderDto implements Serializable, IValidateDto{
     public Timestamp getAwaitedTime(){
         return awaitedTime;
     }
-    public Timestamp getPromisedTime(){
-        return promisedTime;
+    public String getPromoCode(){
+        return promoCode;
     }
-    public LocationDto getLocationDto(){
-        return locationDto;
+    public Long getUserId(){
+        return userId;
     }
-    public Long getLocationId(){
-        return locationId;
+    public PersonDto getPerson(){
+        return person;
     }
-    public Set<ItemDto> getOrdered(){
+    public Set<CreateDetailDto> getOrdered(){
         return ordered;
     }
 
     @Override
-    public boolean isValid(){
-        return false;
+    public boolean equals( Object o ){
+        if(this == o) return true;
+        if(!( o instanceof CreateOrderDto that )) return false;
+        return Objects.equals(getCustomerComment(), that.getCustomerComment()) && Objects.equals(getAwaitedTime(), that.getAwaitedTime()) && Objects.equals(getPromoCode(), that.getPromoCode()) && Objects.equals(getUserId(), that.getUserId()) && Objects.equals(getPerson(), that.getPerson()) && getOrdered().equals(that.getOrdered());
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(getCustomerComment(), getAwaitedTime(), getPromoCode(), getUserId(), getPerson(), getOrdered());
     }
 
     @Override
     public String toString(){
-        return "CreateOrderDto{" + "customerComment='" + customerComment + '\'' + ", awaitedTime=" + awaitedTime + ", promisedTime=" + promisedTime + ", locationDto=" + locationDto + ", locationId=" + locationId + ", ordered=" + ordered + '}';
+        return "CreateOrderDto{" + "customerComment='" + customerComment + '\'' + ", awaitedTime=" + awaitedTime + ", promoCode='" + promoCode + '\'' + ", userId=" + userId + ", person=" + person + ", ordered=" + ordered + '}';
     }
 }

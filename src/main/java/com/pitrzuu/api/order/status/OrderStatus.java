@@ -13,6 +13,10 @@ import java.util.Objects;
 @IdClass(OrderStatusID.class)
 public class OrderStatus{
     public OrderStatus(){}
+    public OrderStatus(Order order){
+        this.order = order;
+        this.orderStatus = EOrderStatus.ORDERED;
+    }
     public OrderStatus( Order order, EOrderStatus orderStatus ){
         this.order = order;
         this.orderStatus = orderStatus;
@@ -42,14 +46,6 @@ public class OrderStatus{
 
     public OrderStatus setOrder( Order order ){
         this.order = order;
-        return this;
-    }
-    public OrderStatus setOrderStatus( EOrderStatus orderStatus ){
-        this.orderStatus = orderStatus;
-        return this;
-    }
-    public OrderStatus setCreationTime( Timestamp creationTime ){
-        this.creationTime = creationTime;
         return this;
     }
 

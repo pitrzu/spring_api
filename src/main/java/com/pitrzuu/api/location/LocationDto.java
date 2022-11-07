@@ -1,10 +1,8 @@
 package com.pitrzuu.api.location;
 
-import com.pitrzuu.api.IValidateDto;
-
 import java.io.Serializable;
 
-public class LocationDto implements Serializable, IValidateDto{
+public class LocationDto implements Serializable{
     public LocationDto(){}
 
     private String        email;
@@ -72,10 +70,5 @@ public class LocationDto implements Serializable, IValidateDto{
     public LocationDto setStreetNumber( String streetNumber ){
         this.streetNumber = streetNumber;
         return this;
-    }
-
-    @Override
-    public boolean isValid(){
-        return false;
     }
 }
