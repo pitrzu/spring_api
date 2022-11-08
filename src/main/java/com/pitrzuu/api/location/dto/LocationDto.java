@@ -1,4 +1,4 @@
-package com.pitrzuu.api.location;
+package com.pitrzuu.api.location.dto;
 
 import java.io.Serializable;
 

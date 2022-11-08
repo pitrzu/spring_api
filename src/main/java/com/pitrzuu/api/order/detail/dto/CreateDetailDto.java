@@ -1,13 +1,20 @@
-package com.pitrzuu.api.order.dto;
+package com.pitrzuu.api.order.detail.dto;
 
 import com.pitrzuu.api.item.pricing.ESize;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 public class CreateDetailDto implements Serializable{
     private Integer itemId;
+
+    @Min(1)
     private Integer quantity;
+
+    @Min(0)
+    @Max(2)
     private ESize size;
 
     public Integer getItemId(){

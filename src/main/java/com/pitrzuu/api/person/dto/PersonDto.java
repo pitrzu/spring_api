@@ -1,18 +1,47 @@
 package com.pitrzuu.api.person.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 public class PersonDto implements Serializable{
+
+    private Long userId;
+
+    @NotBlank
     protected String firstName;
+
+    @NotBlank
     protected String lastName;
+
+    @Email
+    @NotBlank
     protected String email;
+
+    @NotBlank
+    @Pattern(regexp = "[0-9]{9}")
     protected String phone;
+
+    @NotBlank
+    @Pattern(regexp = "[1-9][0-9]{4}")
     protected String postCode;
+
+    @NotBlank
     protected String city;
+
+    @NotBlank
     protected String street;
+
+    @NotBlank
+    @Pattern(regexp = "[0-9]{1,6}")
     protected String streetNumber;
 
+    public Long getUserId(){
+        return userId;
+    }
     public String getFirstName(){
         return firstName;
     }

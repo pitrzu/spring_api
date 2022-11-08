@@ -13,7 +13,7 @@ import java.util.Objects;
 @IdClass(OrderStatusID.class)
 public class OrderStatus{
     public OrderStatus(){}
-    public OrderStatus(Order order){
+    public OrderStatus( Order order ){
         this.order = order;
         this.orderStatus = EOrderStatus.ORDERED;
     }
@@ -43,7 +43,6 @@ public class OrderStatus{
     public Timestamp getCreationTime(){
         return creationTime;
     }
-
     public OrderStatus setOrder( Order order ){
         this.order = order;
         return this;
@@ -55,7 +54,6 @@ public class OrderStatus{
         if(!( o instanceof OrderStatus that )) return false;
         return getOrder().equals(that.getOrder()) && getOrderStatus() == that.getOrderStatus();
     }
-
     @Override
     public int hashCode(){
         return Objects.hash(getOrder(), getOrderStatus());

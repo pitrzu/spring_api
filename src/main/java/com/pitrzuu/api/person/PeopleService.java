@@ -1,11 +1,10 @@
 package com.pitrzuu.api.person;
 
-import com.pitrzuu.api.location.ILocationRepository;
-import com.pitrzuu.api.location.Location;
+import com.pitrzuu.api.location.LocationService;
 import com.pitrzuu.api.order.Order;
-import com.pitrzuu.api.order.dto.CreateOrderDto;
 import com.pitrzuu.api.person.dto.PersonDto;
 import com.pitrzuu.api.user.IUserRepository;
+import com.pitrzuu.api.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -14,34 +13,29 @@ import java.util.Set;
 public class PeopleService{
     public PeopleService( IPeopleRepository peopleRepository,
                           IUserRepository usersRepository,
-                          ILocationRepository locationsRepository ){
+                          LocationService locationsService ){
         this.peopleRepository = peopleRepository;
         this.usersRepository = usersRepository;
-        this.locationsRepository = locationsRepository;
+        this.locationsService = locationsService;
     }
 
     private final IPeopleRepository peopleRepository;
-    private final ILocationRepository locationsRepository;
     private final IUserRepository usersRepository;
+    private final LocationService locationsService;
 
-    public Person createPersonWithOrder( CreateOrderDto orderDto, Order order ){
-        if(orderDto.getUserId() != null && usersRepository.findById(orderDto.getUserId()).isPresent())
-            return usersRepository.findById(orderDto.getUserId()).get().getPerson();
-        PersonDto personDto = orderDto.getPerson();
+    public Person createPersonWithOrder( PersonDto personDto, Order order ){
+        if(personDto.getUserId() != null)
+            return usersRepository
+                    .findById(personDto.getUserId())
+                    .map(User::getPerson)
+                    .orElseThrow();
         Person person = new Person()
                 .setEmail(personDto.getEmail())
                 .setPhone(personDto.getPhone())
                 .setFirstName(personDto.getFirstName())
                 .setLastName(personDto.getLastName())
                 .setOrders(Set.of(order));
-        Location location = new Location()
-                .setPostCode(personDto.getPostCode())
-                .setCity(personDto.getCity())
-                .setStreet(personDto.getStreet())
-                .setStreetNumber(personDto.getStreetNumber())
-                .setPeople(Set.of(person));
-        person.setLocation(location);
-        locationsRepository.saveAndFlush(location);
+        person.setLocation(locationsService.creteLocationWithPerson(personDto, person));
         peopleRepository.saveAndFlush(person);
 
         return person;

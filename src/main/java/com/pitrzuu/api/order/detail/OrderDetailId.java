@@ -39,7 +39,7 @@ class OrderDetailId implements Serializable{
     public boolean equals( Object o ){
         if(this == o) return true;
         if(!( o instanceof OrderDetailId that )) return false;
-        return getOrder().equals(that.getOrder()) && getItem().equals(that.getItem());
+        return getOrder().getId().equals(that.getOrder().getId()) && getItem().equals(that.getItem());
     }
 
     @Override

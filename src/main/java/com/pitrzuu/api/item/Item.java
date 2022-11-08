@@ -30,7 +30,7 @@ public class Item{
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = CascadeType.REFRESH, orphanRemoval = true)
     private Set<PricedItem> pricedItems = new java.util.LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "applicableTo")
