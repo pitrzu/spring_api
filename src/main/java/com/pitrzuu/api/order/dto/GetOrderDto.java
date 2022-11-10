@@ -1,53 +1,33 @@
 package com.pitrzuu.api.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pitrzuu.api.order.Order;
-import com.pitrzuu.api.order.detail.dto.GetOrderDetailDto;
-import com.pitrzuu.api.order.status.OrderStatusDto;
+import com.pitrzuu.api.detail.dto.GetDetailDto;
 import com.pitrzuu.api.person.dto.GetPersonDto;
-import com.pitrzuu.api.promocode.dto.GetPromoCodeDto;
+import com.pitrzuu.api.promocode.GetPromoCodeDto;
+import com.pitrzuu.api.status.GetOrderStatusDto;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetOrderDto{
-    public GetOrderDto() {}
-    public GetOrderDto( Order order ){
-        this.id = order.getId();
-        this.customerComment = order.getCustomerComment();
-        this.totalPrice = order.getTotalPrice();
-        this.creationTime = order.getCreationTime();
-        this.awaitedTime = order.getAwaitedTime();
-        this.promisedTime = order.getPromisedTime();
-        this.promoCode = order.getPromoCode() == null ?
-                null : new GetPromoCodeDto(order.getPromoCode());
-        this.person = new GetPersonDto(order.getPerson());
-        this.status = new OrderStatusDto(order.getLatestStatus());
-        this.ordered = order.getOrderDetails()
-                .stream()
-                .map(GetOrderDetailDto::new)
-                .collect(Collectors.toSet());
-    }
-
-    private Long id;
-    private String customerComment;
-    private Double totalPrice;
-    private Timestamp creationTime;
-    private Timestamp awaitedTime;
-    private Timestamp promisedTime;
-    private GetPromoCodeDto promoCode;
-    private GetPersonDto person;
-    private OrderStatusDto status;
-    private Set<GetOrderDetailDto> ordered;
+   private Long id;
+   private String comment;
+   private Double totalPrice;
+   private Timestamp creationTime;
+   private Timestamp awaitedTime;
+   private Timestamp promisedTime;
+   private GetPromoCodeDto promoCode;
+   private GetPersonDto person;
+   private GetOrderStatusDto status;
+   private Set<GetDetailDto> ordered;
 
     public Long getId(){
         return id;
     }
-    public String getCustomerComment(){
-        return customerComment;
+    public String getComment(){
+        return comment;
     }
     public Double getTotalPrice(){
         return totalPrice;
@@ -67,21 +47,62 @@ public class GetOrderDto{
     public GetPersonDto getPerson(){
         return person;
     }
-    public OrderStatusDto getStatus(){
+    public GetOrderStatusDto getStatus(){
         return status;
     }
-    public Set<GetOrderDetailDto> getOrdered(){
+    public Set<GetDetailDto> getOrdered(){
         return ordered;
+    }
+
+    public GetOrderDto setId( Long id ){
+        this.id = id;
+        return this;
+    }
+    public GetOrderDto setComment( String comment ){
+        this.comment = comment;
+        return this;
+    }
+    public GetOrderDto setTotalPrice( Double totalPrice ){
+        this.totalPrice = totalPrice;
+        return this;
+    }
+    public GetOrderDto setCreationTime( Timestamp creationTime ){
+        this.creationTime = creationTime;
+        return this;
+    }
+    public GetOrderDto setAwaitedTime( Timestamp awaitedTime ){
+        this.awaitedTime = awaitedTime;
+        return this;
+    }
+    public GetOrderDto setPromisedTime( Timestamp promisedTime ){
+        this.promisedTime = promisedTime;
+        return this;
+    }
+    public GetOrderDto setPromoCode( GetPromoCodeDto promoCode ){
+        this.promoCode = promoCode;
+        return this;
+    }
+    public GetOrderDto setPerson( GetPersonDto person ){
+        this.person = person;
+        return this;
+    }
+    public GetOrderDto setStatus( GetOrderStatusDto status ){
+        this.status = status;
+        return this;
+    }
+    public GetOrderDto setOrdered( Set<GetDetailDto> ordered ){
+        this.ordered = ordered;
+        return this;
     }
 
     @Override
     public boolean equals( Object o ){
         if(this == o) return true;
-        if(!( o instanceof GetOrderDto orderDto )) return false;
-        return getId().equals(orderDto.getId()) && Objects.equals(getCustomerComment(), orderDto.getCustomerComment()) && getTotalPrice().equals(orderDto.getTotalPrice()) && getCreationTime().equals(orderDto.getCreationTime()) && Objects.equals(getAwaitedTime(), orderDto.getAwaitedTime()) && Objects.equals(getPromisedTime(), orderDto.getPromisedTime()) && Objects.equals(getPromoCode(), orderDto.getPromoCode()) && getPerson().equals(orderDto.getPerson()) && getStatus().equals(orderDto.getStatus()) && getOrdered().equals(orderDto.getOrdered());
+        if(!( o instanceof GetOrderDto that )) return false;
+        return getId().equals(that.getId()) && Objects.equals(getComment(), that.getComment()) && getTotalPrice().equals(that.getTotalPrice()) && getCreationTime().equals(that.getCreationTime()) && Objects.equals(getAwaitedTime(), that.getAwaitedTime()) && Objects.equals(getPromisedTime(), that.getPromisedTime()) && Objects.equals(getPromoCode(), that.getPromoCode()) && getPerson().equals(that.getPerson()) && getStatus().equals(that.getStatus()) && getOrdered().equals(that.getOrdered());
     }
     @Override
     public int hashCode(){
-        return Objects.hash(getId(), getCustomerComment(), getTotalPrice(), getCreationTime(), getAwaitedTime(), getPromisedTime(), getPromoCode(), getPerson(), getStatus(), getOrdered());
+        return Objects.hash(getId(), getComment(), getTotalPrice(), getCreationTime(), getAwaitedTime(), getPromisedTime(), getPromoCode(), getPerson(), getStatus(), getOrdered());
     }
 }

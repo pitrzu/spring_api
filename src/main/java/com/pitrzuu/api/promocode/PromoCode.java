@@ -2,7 +2,7 @@ package com.pitrzuu.api.promocode;
 
 import com.pitrzuu.api.item.Item;
 import com.pitrzuu.api.order.Order;
-import com.pitrzuu.api.order.detail.OrderDetail;
+import com.pitrzuu.api.detail.OrderDetail;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;

@@ -1,15 +1,16 @@
 package com.pitrzuu.api.order;
 
-import com.pitrzuu.api.order.detail.OrderDetail;
-import com.pitrzuu.api.order.status.OrderStatus;
+import com.pitrzuu.api.detail.OrderDetail;
 import com.pitrzuu.api.person.Person;
 import com.pitrzuu.api.promocode.PromoCode;
+import com.pitrzuu.api.status.OrderStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -91,7 +92,6 @@ public class Order{
                 ).orElse(new OrderStatus(this));
     }
 
-
     public Order setCustomerComment( String customerComment ){
         this.customerComment = customerComment;
         return this;
@@ -121,7 +121,10 @@ public class Order{
                 .map(OrderDetail::getPrice)
                 .reduce(Double::sum)
                 .orElse(0.0d);
-        this.orderDetails = orderDetails;
+        this.orderDetails = orderDetails
+                .stream()
+                .map(detail -> detail.setOrder(this))
+                .collect(Collectors.toSet());
         return this;
     }
 

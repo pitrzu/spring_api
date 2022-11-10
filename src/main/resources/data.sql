@@ -1,5 +1,5 @@
-INSERT INTO categories (category_name)
-VALUES ('Pizza'), ('Fast Food'), ('Sosy');
+INSERT INTO categories (category_name, "category_img-path")
+VALUES ('Pizza', 'pizza.jpg'), ('Fast Food', 'ff.jpg'), ('Sosy', 'sos.jpg');
 
 INSERT INTO items (item_description, "item_img-path", item_name, category_id)
 VALUES ('sos, ser, szynka, pierczarki', 'img.jpg', 'Capriciosa', 1),

@@ -4,6 +4,7 @@ import com.pitrzuu.api.location.Location;
 import com.pitrzuu.api.order.Order;
 import com.pitrzuu.api.user.User;
 import jakarta.persistence.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.Objects;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class Person{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "person")
     private Set<Order> orders = new java.util.LinkedHashSet<>();
 

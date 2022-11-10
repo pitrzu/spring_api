@@ -1,25 +1,83 @@
 package com.pitrzuu.api.person.dto;
 
-import com.pitrzuu.api.person.Person;
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
-public class GetPersonDto extends PersonDto{
-    public GetPersonDto() {}
-    public GetPersonDto( @NotNull Person person ){
-        this.id = person.getId();
-        this.firstName = person.getFirstName();
-        this.lastName = person.getLastName();
-        this.phone = person.getPhone();
-        this.email = person.getEmail();
-        this.city = person.getLocation().getCity();
-        this.postCode = person.getLocation().getPostCode();
-        this.street = person.getLocation().getStreet();
-        this.streetNumber = person.getLocation().getStreetNumber();
+public class GetPersonDto{
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private String city;
+    private String postCode;
+    private String street;
+    private String streetNumber;
+
+    public String getFirstName(){
+        return firstName;
+    }
+    public String getLastName(){
+        return lastName;
+    }
+    public String getEmail(){
+        return email;
+    }
+    public String getPhone(){
+        return phone;
+    }
+    public String getCity(){
+        return city;
+    }
+    public String getPostCode(){
+        return postCode;
+    }
+    public String getStreet(){
+        return street;
+    }
+    public String getStreetNumber(){
+        return streetNumber;
     }
 
-    private Long id;
+    public GetPersonDto setFirstName( String firstName ){
+        this.firstName = firstName;
+        return this;
+    }
+    public GetPersonDto setLastName( String lastName ){
+        this.lastName = lastName;
+        return this;
+    }
+    public GetPersonDto setEmail( String email ){
+        this.email = email;
+        return this;
+    }
+    public GetPersonDto setPhone( String phone ){
+        this.phone = phone;
+        return this;
+    }
+    public GetPersonDto setCity( String city ){
+        this.city = city;
+        return this;
+    }
+    public GetPersonDto setPostCode( String postCode ){
+        this.postCode = postCode;
+        return this;
+    }
+    public GetPersonDto setStreet( String street ){
+        this.street = street;
+        return this;
+    }
+    public GetPersonDto setStreetNumber( String streetNumber ){
+        this.streetNumber = streetNumber;
+        return this;
+    }
 
-    public Long getId(){
-        return id;
+    @Override
+    public boolean equals( Object o ){
+        if(this == o) return true;
+        if(!( o instanceof GetPersonDto that )) return false;
+        return getFirstName().equals(that.getFirstName()) && getLastName().equals(that.getLastName()) && getEmail().equals(that.getEmail()) && getPhone().equals(that.getPhone()) && getCity().equals(that.getCity()) && getPostCode().equals(that.getPostCode()) && getStreet().equals(that.getStreet()) && getStreetNumber().equals(that.getStreetNumber());
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(getFirstName(), getLastName(), getEmail(), getPhone(), getCity(), getPostCode(), getStreet(), getStreetNumber());
     }
 }
