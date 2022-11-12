@@ -1,11 +1,26 @@
 package com.pitrzuu.api.location.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import java.util.Objects;
 
 public class CreateLocationDto{
+
+    @NotBlank
+    @Pattern(regexp = "[A-Z][a-z]+")
     private String city;
+
+    @NotBlank
+    @Pattern(regexp = "\\d{5}")
     private String postCode;
+
+    @NotBlank
+    @Pattern(regexp = "[A-Z][a-z]+")
     private String street;
+
+    @NotBlank
+    @Pattern(regexp = "\\d*")
     private String streetNumber;
 
     public String getCity(){

@@ -118,7 +118,7 @@ public class Order{
     }
     public Order setOrderDetails( Set<OrderDetail> orderDetails ){
         this.totalPrice = orderDetails.stream()
-                .map(OrderDetail::getPrice)
+                .map(detail -> detail.getPrice() * detail.getQuantity())
                 .reduce(Double::sum)
                 .orElse(0.0d);
         this.orderDetails = orderDetails

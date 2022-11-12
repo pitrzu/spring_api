@@ -6,11 +6,15 @@ import com.pitrzuu.api.status.EOrderStatus;
 import com.pitrzuu.api.status.IOrderStatusRepository;
 import com.pitrzuu.api.status.OrderStatus;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -35,7 +39,8 @@ public class OrderController{
 
     @GetMapping("/order/{id}")
     public ResponseEntity<?> oneById( @PathVariable Long id ){
-        Order order = ordersService.findOrderById(id).orElseThrow(EntityNotFoundException::new);
+        Order order = ordersService.findOrderById(id).orElseThrow(() ->
+                new EntityNotFoundException(String.format("Order with id %d not found", id)));
         return ResponseEntity
                 .ok()
                 .body(EntityModel.of(orderMapper.createDto(order),
@@ -58,7 +63,7 @@ public class OrderController{
     }
 
     @PostMapping("/order")
-    public ResponseEntity<?> create(@RequestBody CreateOrderDto dto){
+    public ResponseEntity<?> create(@Valid @RequestBody CreateOrderDto dto){
         Order order = ordersService.create(orderMapper.createEntity(dto));
         EntityModel<GetOrderDto> model = EntityModel.of(orderMapper.createDto(order),
                 linkTo(methodOn(OrderController.class).oneById(order.getId())).withSelfRel()
@@ -70,10 +75,21 @@ public class OrderController{
 
     @PutMapping("/order/{id}/completed")
     public ResponseEntity<?> complete(@PathVariable Long id){
-        Order order = ordersService.findOrderById(id).orElseThrow(EntityNotFoundException::new);
+        Order order = ordersService.findOrderById(id).orElseThrow(() ->
+                new EntityNotFoundException(String.format("Order with id %d not found!", id)));
         if(order.getLatestStatus().getOrderStatus() != EOrderStatus.IN_DELIVERY)
-            return ResponseEntity.badRequest().body(order);
+            return ResponseEntity.badRequest().body(orderMapper.createDto(order));
         orderStatusesRepository.save(new OrderStatus(order, EOrderStatus.COMPLETED));
-        return ResponseEntity.ok().body(order);
+        return ResponseEntity.ok().body(orderMapper.createDto(order));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> notFound( RuntimeException e, WebRequest request ){
+        return new ResponseEntity<>(
+                e.getMessage(),
+                new HttpHeaders(),
+                HttpStatus.NOT_FOUND
+        );
     }
 }

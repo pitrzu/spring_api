@@ -3,6 +3,9 @@ package com.pitrzuu.api.order.dto;
 import com.pitrzuu.api.detail.dto.CreateDetailDto;
 import com.pitrzuu.api.person.dto.CreatePersonDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -12,9 +15,17 @@ import java.util.Set;
 public class CreateOrderDto{
     private String customerComment;
     private Timestamp awaitedTime;
+
+    @Min(1)
     private Long personId;
-    private @Valid CreatePersonDto person;
+
+    @Valid
+    private CreatePersonDto person;
+
+    @UniqueElements
     private Set<@Valid CreateDetailDto> ordered;
+
+    @Pattern(regexp = "[A-Z]+")
     private String promoCode;
 
     public String getCustomerComment(){

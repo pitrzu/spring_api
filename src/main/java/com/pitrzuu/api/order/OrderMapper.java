@@ -30,7 +30,7 @@ public class OrderMapper{
     private final IPromoCodeRepository promoCodesRepository;
     private final IPersonRepository peopleRepository;
     private final PersonMapper personMapper;
-    private final DetailMapper detailMapper;
+    private final DetailMapper  detailMapper;
     private final StatusMapper statusMapper;
     private final PromoCodeMapper promoCodeMapper;
 
@@ -39,14 +39,18 @@ public class OrderMapper{
                 .setAwaitedTime(dto.getAwaitedTime())
                 .setCustomerComment(dto.getCustomerComment())
                 .setPromoCode(dto.getPromoCode().isPresent() ?
-                        promoCodesRepository.findByName(dto.getPromoCode().get()).orElseThrow(EntityNotFoundException::new) :
+                        promoCodesRepository.findByName(dto.getPromoCode().get()).orElseThrow(() ->
+                                new EntityNotFoundException(String.format("Promo code with name %s, not found!", dto.getPromoCode().get()))
+                        ) :
                         null
                 ).setPerson(dto.getPersonId().isPresent() ?
                         peopleRepository.findById(
                                 dto.getPersonId().get()
-                        ).orElseThrow(EntityNotFoundException::new) :
+                        ).orElseThrow(() ->
+                                new EntityNotFoundException(String.format("User with id: %d, not found!", dto.getPersonId().get()))) :
                         personMapper.createEntity(
-                                dto.getPerson().orElseThrow(IllegalArgumentException::new)
+                                dto.getPerson().orElseThrow(() ->
+                                        new IllegalArgumentException(String.format("Cannot create person with dto: %s", dto)))
                         )
                 ).setOrderDetails(detailMapper.createEntities(dto.getOrdered()));
     }

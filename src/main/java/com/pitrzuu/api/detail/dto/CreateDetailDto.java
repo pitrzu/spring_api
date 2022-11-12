@@ -1,21 +1,35 @@
 package com.pitrzuu.api.detail.dto;
 
 import com.pitrzuu.api.pricing.ESize;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.Objects;
 
 public class CreateDetailDto{
+    @Min(1)
+    @NotNull
     private Integer quantity;
-    private ESize size;
+
+    @NotNull
+    @Pattern(regexp = "(SMALL|MEDIUM|BIG)", flags = {Pattern.Flag.CASE_INSENSITIVE})
+    private String size;
+
+    @Min(1)
+    @NotNull
     private Integer itemId;
+
     private String comment;
+
+    @Pattern(regexp = "[A-Z]+")
     private String promoCode;
 
     public Integer getQuantity(){
         return quantity;
     }
     public ESize getSize(){
-        return size;
+        return ESize.valueOf(this.size.toUpperCase());
     }
     public Integer getItemId(){
         return itemId;
